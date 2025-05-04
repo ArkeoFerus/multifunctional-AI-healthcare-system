@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Detection and Prescription - Medical Diagnosis System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2196f3;
+            --primary-light: #e3f2fd;
+            --primary-dark: #1976d2;
+            --secondary-color: #f8f9fa;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e3eeff 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-tabs {
+            border: none;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            transition: all var(--transition-speed);
+            font-weight: 500;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2rem;
+            transition: transform var(--transition-speed);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            transition: all var(--transition-speed);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+        }
+
+        .symptom-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            margin: 0.25rem;
+            font-weight: 500;
+            transition: all var(--transition-speed);
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .symptom-tag:hover {
+            background-color: #bbdefb;
+            transform: translateY(-2px);
+        }
+
+        .symptom-tag .remove {
+            margin-left: 0.5rem;
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 2px 6px;
+            border-radius: 50%;
+            transition: all var(--transition-speed);
+        }
+
+        .symptom-tag .remove:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .symptom-suggestions {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            border-radius: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .symptom-suggestion {
+            display: inline-block;
+            background-color: white;
+            color: var(--primary-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border: 1px solid var(--primary-light);
+            transition: all var(--transition-speed);
+        }
+
+        .symptom-suggestion:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.2);
+        }
+
+        .btn-primary {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            border: none;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            transition: all var(--transition-speed);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading-spinner {
+            width: 4rem;
+            height: 4rem;
+            color: var(--primary-color);
+        }
+
+        .result-section {
+            display: none;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .medical-info {
+            background: linear-gradient(to right, #ffffff, #f8f9fa);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e0e0e0;
+            transition: all var(--transition-speed);
+        }
+
+        .medical-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .medical-info h5 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .medical-info h5 i {
+            color: var(--primary-color);
+        }
+
+        .medical-info ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .medical-info ul li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .medical-info ul li:last-child {
+            border-bottom: none;
+        }
+
+        .medical-info ul li:before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 0.75rem 1.5rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="display-4">Disease Detection and Prescription</h1>
+            <p class="lead text-secondary">Describe your symptoms and get medical advice</p>
+        </div>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="/" role="tab">
+                    <i class="fas fa-brain"></i> Brain Tumor Detection
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" href="/ai-doctor" role="tab">
+                    <i class="fas fa-user-md"></i> Disease Detection and Prescription
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="/diabetes-prediction" role="tab">
+                    <i class="fas fa-chart-line"></i> Diabetes Prediction
+                </a>
+            </li>
+        </ul>
+
+        <div class="card">
+            <div class="card-body">
+                <form id="symptom-form">
+                    <div class="mb-4">
+                        <label for="symptoms" class="form-label">
+                            <i class="fas fa-notes-medical"></i> Enter your symptoms (one per line)
+                        </label>
+                        <textarea class="form-control" id="symptoms" rows="4" 
+                            placeholder="Example:&#10;Fever&#10;Headache&#10;Cough"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-list-check"></i> Selected Symptoms:
+                        </label>
+                        <div id="selected-symptoms" class="mb-3"></div>
+                    </div>
+                    <div class="symptom-suggestions mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-lightbulb"></i> Available Symptoms:
+                        </label>
+                        <div id="available-symptoms"></div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg" id="analyze-btn">
+                            <i class="fas fa-stethoscope"></i> Analyze Symptoms
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner-border loading-spinner" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Analyzing your symptoms...</p>
+        </div>
+
+        <div class="result-section" id="result-section">
+            <div class="card">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0 text-primary">
+                        <i class="fas fa-clipboard-check"></i> Diagnosis Results
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="medical-info">
+                        <h5><i class="fas fa-disease"></i> Possible Condition</h5>
+                        <p id="disease-name" class="mb-0"></p>
+                    </div>
+                    <div class="medical-info">
+                        <h5><i class="fas fa-info-circle"></i> Description</h5>
+                        <p id="disease-description" class="mb-0"></p>
+                    </div>
+                    <div class="medical-info">
+                        <h5><i class="fas fa-pills"></i> Recommended Medications</h5>
+                        <ul id="medications"></ul>
+                    </div>
+                    <div class="medical-info">
+                        <h5><i class="fas fa-shield-alt"></i> Precautions</h5>
+                        <ul id="precautions"></ul>
+                    </div>
+                    <div class="medical-info">
+                        <h5><i class="fas fa-utensils"></i> Recommended Diet</h5>
+                        <ul id="diet"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('symptom-form');
+            const symptomsTextarea = document.getElementById('symptoms');
+            const selectedSymptomsDiv = document.getElementById('selected-symptoms');
+            const availableSymptomsDiv = document.getElementById('available-symptoms');
+            const resultSection = document.getElementById('result-section');
+            const loading = document.getElementById('loading');
+            let selectedSymptoms = new Set();
+            
+            // Fetch available symptoms
+            async function loadAvailableSymptoms() {
+                try {
+                    const response = await fetch('/get-symptoms');
+                    const data = await response.json();
+                    
+                    // Sort symptoms alphabetically
+                    const symptoms = data.symptoms.sort();
+                    
+                    // Display available symptoms as clickable tags
+                    availableSymptomsDiv.innerHTML = symptoms
+                        .map(symptom => `
+                            <span class="symptom-suggestion" onclick="addSymptom('${symptom}')">
+                                ${symptom}
+                            </span>
+                        `).join('');
+                } catch (error) {
+                    console.error('Error loading symptoms:', error);
+                }
+            }
+            
+            // Load available symptoms when page loads
+            loadAvailableSymptoms();
+            
+            // Make addSymptom available globally
+            window.addSymptom = function(symptom) {
+                console.log('Adding symptom:', symptom);
+                selectedSymptoms.add(symptom.toLowerCase());
+                updateSelectedSymptoms();
+                
+                // Add to textarea if empty, otherwise add new line
+                if (symptomsTextarea.value.trim() === '') {
+                    symptomsTextarea.value = symptom;
+                } else {
+                    symptomsTextarea.value += '\\n' + symptom;
+                }
+            };
+
+            // Handle form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Clear any existing symptoms
+                selectedSymptoms.clear();
+                
+                // Process any symptoms in the textarea
+                const currentSymptoms = symptomsTextarea.value
+                    .split('\\n')
+                    .map(s => s.trim())
+                    .filter(s => s && !s.startsWith('Example'));
+                
+                console.log('Raw textarea value:', symptomsTextarea.value);
+                console.log('Current symptoms after split:', currentSymptoms);
+                
+                // Add current symptoms to the set
+                currentSymptoms.forEach(symptom => {
+                    if (symptom) {
+                        const processedSymptom = symptom.toLowerCase().trim();
+                        console.log('Processing symptom:', symptom, 'to:', processedSymptom);
+                        selectedSymptoms.add(processedSymptom);
+                    }
+                });
+                
+                console.log('Final selected symptoms:', Array.from(selectedSymptoms));
+                
+                // Update the display
+                updateSelectedSymptoms();
+                
+                if (selectedSymptoms.size === 0) {
+                    alert('Please enter at least one symptom');
+                    return;
+                }
+
+                loading.style.display = 'block';
+                resultSection.classList.remove('show');
+
+                try {
+                    const symptomsArray = Array.from(selectedSymptoms);
+                    const requestBody = {
+                        symptoms: symptomsArray
+                    };
+                    console.log('Sending request with body:', requestBody);
+                    
+                    const response = await fetch('/analyze-symptoms', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    console.log('Response status:', response.status);
+                    const data = await response.json();
+                    console.log('Response data:', data);
+                    
+                    // Update the result section
+                    document.getElementById('disease-name').textContent = data.disease;
+                    document.getElementById('disease-description').textContent = data.description;
+                    
+                    // Update medications
+                    const medicationsList = document.getElementById('medications');
+                    medicationsList.innerHTML = data.medications.map(med => `<li>${med}</li>`).join('');
+                    
+                    // Update precautions
+                    const precautionsList = document.getElementById('precautions');
+                    precautionsList.innerHTML = data.precautions.map(prec => `<li>${prec}</li>`).join('');
+                    
+                    // Update diet
+                    const dietList = document.getElementById('diet');
+                    dietList.innerHTML = data.diet.map(item => `<li>${item}</li>`).join('');
+
+                    resultSection.classList.add('show');
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error analyzing symptoms. Please try again.');
+                } finally {
+                    loading.style.display = 'none';
+                }
+            });
+
+            // Handle symptom input
+            symptomsTextarea.addEventListener('input', function(e) {
+                // Clear previous symptoms
+                selectedSymptoms.clear();
+                
+                // Get current symptoms
+                const currentSymptoms = this.value
+                    .split('\\n')
+                    .map(s => s.trim())
+                    .filter(s => s && !s.startsWith('Example'));
+                
+                // Add to selected symptoms
+                currentSymptoms.forEach(symptom => {
+                    if (symptom) {
+                        const processedSymptom = symptom.toLowerCase().trim();
+                        selectedSymptoms.add(processedSymptom);
+                    }
+                });
+                
+                // Update display
+                updateSelectedSymptoms();
+            });
+
+            function updateSelectedSymptoms() {
+                const symptomsArray = Array.from(selectedSymptoms);
+                console.log('Updating display with symptoms:', symptomsArray);
+                
+                selectedSymptomsDiv.innerHTML = symptomsArray
+                    .map(symptom => `
+                        <span class="symptom-tag">
+                            ${symptom}
+                            <span class="remove" onclick="removeSymptom('${symptom}')">&times;</span>
+                        </span>
+                    `).join('');
+            }
+
+            // Make removeSymptom available globally
+            window.removeSymptom = function(symptom) {
+                console.log('Removing symptom:', symptom);
+                selectedSymptoms.delete(symptom);
+                updateSelectedSymptoms();
+                
+                // Update textarea
+                const symptoms = symptomsTextarea.value
+                    .split('\\n')
+                    .filter(s => s.toLowerCase().trim() !== symptom.toLowerCase());
+                symptomsTextarea.value = symptoms.join('\\n');
+            };
+        });
+    </script>
+</body>
+</html> 
